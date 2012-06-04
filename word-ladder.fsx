@@ -54,6 +54,11 @@ let findLadder startword endword =
     let startNodes = buildNodes children [startword] []
     findLadderWorker startNodes endword seen
 
-
-let ladder = findLadder "blue" "suck"
-printfn "%A" ladder
+let args = System.Environment.GetCommandLineArgs()
+if args.Length < 3 then // 3 is a hack to support both fsi and fsc
+  printfn "You forgot to include start and end word arguments"
+else
+  let startword = args.[(args.Length - 2)]
+  let endword = args.[(args.Length - 1)]
+  let ladder = findLadder startword endword
+  printfn "%A" ladder
