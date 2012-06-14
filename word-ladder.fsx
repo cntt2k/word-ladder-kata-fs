@@ -1,13 +1,13 @@
-let words = System.IO.File.ReadAllLines("four-char-dictionary.txt")
+let dict = System.IO.File.ReadAllLines(@".\four-char-dictionary.txt")
 
 let isWordInDict word =
-  words |> Seq.exists (fun w -> w = word)
+  System.Array.BinarySearch(dict, word) > 0
 
 let filterToDict words =
   words |> List.filter isWordInDict
 
 let filterNotSeen (seen : Set<string>) words =
-  words |> List.filter (fun w -> not(seen.Contains(w)))
+  words |> List.filter (fun w -> not <| seen.Contains(w))
 
 let findChildren (word : string) = [
   let generateCandidates prefix char postfix =
@@ -36,14 +36,12 @@ let rec findLadderWorker (searchNodes : node List) (endword : string) (seen : Se
     let newSearchNodes = searchNodes @ childnodes
     findLadderWorker newSearchNodes endword (seen + (Set.ofList children))
     
-  let testnode (node : node) (searchNodes : node List) =
-    match node with
-      | parents, word when word = endword -> word :: parents |> List.rev
-      | parents, word -> queuechildren word parents searchNodes
-
   match searchNodes with
     | [] -> []
-    | node :: others -> testnode node others
+    | node :: others ->
+      match node with
+        | parents, word when word = endword -> word :: parents |> List.rev
+        | parents, word -> queuechildren word parents searchNodes
   
 let findLadder startword endword =
   if startword = endword then
