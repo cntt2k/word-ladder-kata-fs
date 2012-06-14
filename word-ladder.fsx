@@ -41,7 +41,7 @@ let rec findLadderWorker (searchNodes : node List) (endword : string) (seen : Se
     | node :: others ->
       match node with
         | parents, word when word = endword -> word :: parents |> List.rev
-        | parents, word -> queuechildren word parents searchNodes
+        | parents, word -> queuechildren word parents others
   
 let findLadder startword endword =
   if startword = endword then
